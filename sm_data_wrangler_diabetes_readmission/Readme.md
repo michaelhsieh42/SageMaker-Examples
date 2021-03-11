@@ -16,6 +16,8 @@ You will start by downloading the dataset and uploading it to a S3 bucket for yo
 
 ## Data Wrangler flow overview
 You can view the pre-built Data Wrangler flow file that comes along in the repo: [diabetes_readmission.flow](./diabetes_readmission.flow). 
-![dw-flow](./doc/screenshot_flow.png)
+![dw-flow](./doc/data_wrangler_flow.png)
 
-It loads multiple files from S3 into DW flow: `diabetic_data_hospital_visits.csv`, `diabetic_data_demographic.csv` and `diabetic_data_labs.csv` for demonstration. It performs a inner join between the tables in `diabetic_data_hospital_visits.csv` and `diabetic_data_demographic.csv` by `encounter_id`.
+It has multiple files from S3 loaded in: `diabetic_data_hospital_visits.csv`, `diabetic_data_demographic.csv` and `diabetic_data_labs.csv` for demonstration. It performs a inner join between the tables in `diabetic_data_hospital_visits.csv` and `diabetic_data_demographic.csv` by `encounter_id`. It applies 22 transformation steps to clean up the data to meet the following requirements: 
+- no duplicate columns
+- 
