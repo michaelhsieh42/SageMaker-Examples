@@ -1,0 +1,915 @@
+{
+  "metadata": {
+    "version": 1
+  },
+  "nodes": [
+    {
+      "node_id": "6a958114-e711-4be1-be84-15c5e656373c",
+      "type": "SOURCE",
+      "operator": "sagemaker.s3_source_0.1",
+      "parameters": {
+        "dataset_definition": {
+          "__typename": "S3CreateDatasetDefinitionOutput",
+          "datasetSourceType": "S3",
+          "name": "diabetic_data_hospital_visits.csv",
+          "description": null,
+          "s3ExecutionContext": {
+            "__typename": "S3ExecutionContext",
+            "s3Uri": "s3://sagemaker-us-east-1-029454422462/uci-us-diabetes/dataset_diabetes/diabetic_data_hospital_visits.csv",
+            "s3ContentType": "csv",
+            "s3HasHeader": true
+          }
+        }
+      },
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "default",
+          "sampling": {
+            "sampling_method": "sample_by_limit",
+            "limit_rows": 50000
+          }
+        }
+      ]
+    },
+    {
+      "node_id": "c25dffeb-6e76-4cbf-87a4-11b23fef5961",
+      "type": "TRANSFORM",
+      "operator": "sagemaker.spark.infer_and_cast_type_0.1",
+      "parameters": {},
+      "trained_parameters": {
+        "schema": {
+          "encounter_id": "long",
+          "patient_nbr": "long",
+          "admission_type_id": "long",
+          "discharge_disposition_id": "long",
+          "admission_source_id": "long",
+          "time_in_hospital": "long",
+          "payer_code": "string",
+          "medical_specialty": "string",
+          "num_lab_procedures": "long",
+          "num_procedures": "long",
+          "num_medications": "long",
+          "number_outpatient": "long",
+          "number_emergency": "long",
+          "number_inpatient": "long",
+          "diag_1": "long",
+          "diag_2": "long",
+          "diag_3": "long",
+          "readmitted": "string"
+        }
+      },
+      "inputs": [
+        {
+          "name": "default",
+          "node_id": "6a958114-e711-4be1-be84-15c5e656373c",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "1d1dc7ab-912d-4644-94f6-cee0f420871e",
+      "type": "SOURCE",
+      "operator": "sagemaker.s3_source_0.1",
+      "parameters": {
+        "dataset_definition": {
+          "__typename": "S3CreateDatasetDefinitionOutput",
+          "datasetSourceType": "S3",
+          "name": "diabetic_data_demographic.csv",
+          "description": null,
+          "s3ExecutionContext": {
+            "__typename": "S3ExecutionContext",
+            "s3Uri": "s3://sagemaker-us-east-1-029454422462/uci-us-diabetes/dataset_diabetes/diabetic_data_demographic.csv",
+            "s3ContentType": "csv",
+            "s3HasHeader": true
+          }
+        }
+      },
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "default",
+          "sampling": {
+            "sampling_method": "sample_by_limit",
+            "limit_rows": 50000
+          }
+        }
+      ]
+    },
+    {
+      "node_id": "34fd46d4-048c-4578-b309-60f6a64f8cd1",
+      "type": "TRANSFORM",
+      "operator": "sagemaker.spark.infer_and_cast_type_0.1",
+      "parameters": {},
+      "trained_parameters": {
+        "schema": {
+          "encounter_id": "long",
+          "patient_nbr": "long",
+          "race": "string",
+          "gender": "string",
+          "age": "string",
+          "weight": "string"
+        }
+      },
+      "inputs": [
+        {
+          "name": "default",
+          "node_id": "1d1dc7ab-912d-4644-94f6-cee0f420871e",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "be4ea0e0-9c73-4f87-9fe6-0b6562a8e9e5",
+      "type": "TRANSFORM",
+      "operator": "sagemaker.spark.join_tables_0.1",
+      "parameters": {
+        "left_column": "patient_nbr",
+        "right_column": "patient_nbr",
+        "join_type": "inner"
+      },
+      "inputs": [
+        {
+          "name": "df",
+          "node_id": "c25dffeb-6e76-4cbf-87a4-11b23fef5961",
+          "output_name": "default"
+        },
+        {
+          "name": "df",
+          "node_id": "34fd46d4-048c-4578-b309-60f6a64f8cd1",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "04fecf39-5161-4b79-84ce-5eb366c00f13",
+      "type": "TRANSFORM",
+      "operator": "sagemaker.spark.manage_columns_0.1",
+      "parameters": {
+        "operator": "Drop column",
+        "drop_column_parameters": {
+          "column_to_drop": "payer_code"
+        }
+      },
+      "inputs": [
+        {
+          "name": "df",
+          "node_id": "be4ea0e0-9c73-4f87-9fe6-0b6562a8e9e5",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "42f70c52-6fb6-4a28-a38d-e6b0a890d4f2",
+      "type": "TRANSFORM",
+      "operator": "sagemaker.spark.manage_columns_0.1",
+      "parameters": {
+        "operator": "Drop column",
+        "drop_column_parameters": {
+          "column_to_drop": "medical_specialty"
+        }
+      },
+      "inputs": [
+        {
+          "name": "df",
+          "node_id": "04fecf39-5161-4b79-84ce-5eb366c00f13",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "df05ef34-2182-4e17-b7a4-4bff9975f743",
+      "type": "TRANSFORM",
+      "operator": "sagemaker.spark.manage_columns_0.1",
+      "parameters": {
+        "operator": "Drop column",
+        "drop_column_parameters": {
+          "column_to_drop": "weight"
+        }
+      },
+      "inputs": [
+        {
+          "name": "df",
+          "node_id": "42f70c52-6fb6-4a28-a38d-e6b0a890d4f2",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "b528d71b-eedb-483e-a795-a41e011548a4",
+      "type": "TRANSFORM",
+      "operator": "sagemaker.spark.manage_columns_0.1",
+      "parameters": {
+        "operator": "Drop column",
+        "drop_column_parameters": {
+          "column_to_drop": "encounter_id_1"
+        }
+      },
+      "inputs": [
+        {
+          "name": "df",
+          "node_id": "df05ef34-2182-4e17-b7a4-4bff9975f743",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "ef53f551-1abe-4905-99b4-337762cee0d1",
+      "type": "TRANSFORM",
+      "operator": "sagemaker.spark.manage_columns_0.1",
+      "parameters": {
+        "operator": "Drop column",
+        "drop_column_parameters": {
+          "column_to_drop": "patient_nbr_1"
+        }
+      },
+      "inputs": [
+        {
+          "name": "df",
+          "node_id": "b528d71b-eedb-483e-a795-a41e011548a4",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "c3a5d221-9244-4586-be76-8fde924d9f34",
+      "type": "TRANSFORM",
+      "operator": "sagemaker.spark.custom_pandas_0.1",
+      "parameters": {
+        "code": "# Table is available as variable `df`\nmapping = {'[0-10)': 0,\n           '[10-20)': 1,\n           '[20-30)': 2,\n           '[30-40)': 3,\n           '[40-50)': 4,\n           '[50-60)': 5,\n           '[60-70)': 6,\n           '[70-80)': 7,\n           '[80-90)': 8,\n           '[90-100)': 9}\ndf['age_ord']=df['age'].map(mapping)"
+      },
+      "inputs": [
+        {
+          "name": "df",
+          "node_id": "ef53f551-1abe-4905-99b4-337762cee0d1",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "77179344-71ed-49a0-9d93-382f381f00d7",
+      "type": "TRANSFORM",
+      "operator": "sagemaker.spark.encode_categorical_0.1",
+      "parameters": {
+        "operator": "One-hot encode",
+        "one_hot_encode_parameters": {
+          "invalid_handling_strategy": "Keep",
+          "drop_last": false,
+          "output_style": "Columns",
+          "input_column": "gender",
+          "output_column": "gender"
+        },
+        "ordinal_encode_parameters": {
+          "invalid_handling_strategy": "Replace with NaN"
+        }
+      },
+      "trained_parameters": {
+        "one_hot_encode_parameters": {
+          "_hash": -1767228197713558300,
+          "string_indexer_model": "P)h>@6aWAK2mo*cX;M47T4LP*003kG000vJ003=ebYWy+bYU-WVRCdWFfcGMFm;a0PQyS9MfZG$*Xby2Xb9cHri-dbAhwaoIBC>*)iZ-ARsJ0lBqSudy}svMU!XG>BW%F)pfF%}AQc1hQCXvU!jzfRbK=nrTc_!Rc;_`4C?JiNVnQ2Wv#giv)$M(~u2ywZz|6lA$I&}6SE^Ly0_~?;l)~jvOZZ3GzBNtR=&J5}ypxLXXm=>)3;3KuP7mG)l*op*^WW<SblT9?y`!0ZN1`C{=zhxsiJW07KvR#|q^B#^>#wx!Pw$^SV)iU~oZ&so)XO=LTzaNcCfA)GDRwYTH(yXo0|XQR000O8a06*lCAMm+4gdfE3;+NC7ytkOZDn*}WMOn+FD`Ila&#>)FfcGME@N_IOD;-gU|?WkNQ&BJ4FFI}0|XQR000O8a06*l^O}xso&f*=ssaE2NB{r;WMOn+FK}UUbS*G2FfcGJF<~(=VPZBmEn#FeVJ$Q>Wo9j5H8(OXVq#`CH#Rb4G-Nh3En_e+FfMa$VQ_GHE^uLTadl;MjZ*PT8!;5lo!u!|5C$nZxF1TOr9zk8?dsW<{?cED3KJO<1Q{dO<m_QCS1+j|(*JI-e``<Ms#7LHNZ$Lt@8#ut<YfFk!U#|Cw2M6mJnRJt>g=5AOI_aR&xiV&t6UK8t1P&Z2%%oE0sBS=)tt?+aF7Stl5{?veS>2MfEVT1_0>V$%y@PA%S@)A#xB}($+qIDRAyXN{1&^|Lwhw+Q@OEAdQ&P{NNrzIxZZjqTL?8=Kk$S0R)Fh%%R~Oz^LrnP*5ZE>>^8i{ZwFR;YxI_BKY+;~Xbi1D?;^iTNLgJlKI7nqJs4xxvNCz8$%mMQEJS4YmBL&p2Eo-_T2_@etdN!qZaMkm+);ZwlXOUpt>zO;yEMzC5{3@X@2KX*J@w2K@Jsz;9bdsKZ$I9_-uKG&1;CS1Tb^rkJXeYi;RSN>A5cTWQze%`m#!^9uf^i$0+FMY!B0iiTur1Iu_$Cwvy;wqC7NM25Lqu4GRx9_KNI^|KS>gi#K|D)_rAn&nDvrW40in>fQgS_>?iO`{{m1;0|XQR000O8a06*l;Wsn}5&!@I5C8xGO#lD@WMOn+FD`Ila&#>)FfcGMEiqv+F=1jhHZ5UfHDN6@Gi7EiVKp~0En;G3Ha9jhWHe+pG%aH=FfcB2Zeeh6c`k5aa&dKKbS`6ZV@obdW?*1oVpzKCraO~sYCZr^O928D0~7!N00;nZ18Gt_x>{o00001F0RR9K00000000000001_fdBvi0BvP-VPs)+VJ~oDa&#>)FfcGMP)h*<6ay3h000O8a06*lCAMm+4gdfE3;+NC7ytkO0000000000q=60r003=ebYWy+bYU+paA9(EEif=JFfcA-a$`_S0Rj{Q6aWAK2mo*cX;Sl=j&7a-00622002k;0000000000005+cQUL$}WMOn+FK}UUbS*G2FfcGJF<~(=VPZBmEn#FeVJ$Q>Wo9j5H8(OXVq#`CH#Rb4G-Nh3En_e+FfMa$VQ_GHE^uLTadl;MP)h*<6ay3h000O8a06*l;Wsn}5&!@I5C8xGO#lD@0000000000q=8lg003lRbYU+paA9(EEif=JFfc7KVKFgbVm3A{VPrL7Ei^M_W-VbgH!>|^VrDisHZo*1WHvM{V=yo<E^}^SaBz7paA9(Bb!BueV{&6qO9ci10000400aPd0RRBg0{{R300",
+          "one_hot_encoder_model": "P)h>@6aWAK2mo*cX;QVgBfZlA003zL000vJ003=ebYWy+bYU-WVRCdWFfcGMFpZB*O9Md+hVTB2oVUZa(=BwbQc$qy$?FhjvUYL4$YeZN_P;w;6a)n?IlRg9yyOhlV<|8~;%9{!?TJ*$$S*2*H4#c>QumQ=k{qH<j`-MyhYn;8R0KnYalKm)o9%u#=&jy&aN!?`%ba2}Yt^fMh2br(`o`7SweW}13|7+y=}GGe+ezaw9I=_t;5g+wECS<%zEB4zjLy?-d_{jT5p&`Or7F3~b@DAULLnQQy!mLH<M-k#hou8Y6IL$|zm^Hte|G)-i7}sduq;>aP)h>@6aWAK2mo*cX;P4YOScXH000aC000;O003=ebYWy+bYU+paA9(EEif=JFfcA-a$`#_N@ieSU}D&-ykjc>P)h>@6aWAK2mo*cX;K+jlDd8Y001xo002k;003lRbYU-WVRCdWFfcGMFfB7RV`gJ9IXNvcVKFl;G%+wWEjc$bH7#T|G&o^mI5=cBVl^#eFfcGKb8ca9aCt6pVRCVGWpsT~O-m~=6is8TE_C4{Lk4D10v3fa%)F`Nw7Afnh=`~=c|6iiqQlF~)Ff4^7W^6hK!1q0wu&N{z~z3NbMLt!XNTu8L4=V`NH91p(h6v^i4dAw4{d#k;A|XVuuE{kVl>MV?4KO1*^w~+|JmV<ECs=67t{5jaPqn~lZ)a(T4>)wyG`2Eg>?WRcoWeTsbwiEhdk^De$ZJBpxI^%`Pp~!JLv;Vu!p@T@43-g-Ty_aAHY5^W>$IfF!Do6Yje%TNPtNGu9x3QV~e_?%L$Kogy{AUguT@qoZGQ<+|>8HluqQr3Hs7_WNtE&tk0}7<Dp|AQ-##IW&Nv1R*7;}`nCoj=8R9KFh)!uy;$vXo-HaMNdx&|T{%%y_H?W@>nowHoQAA|NDMSUVXzF@hbCw|o&KF7dc07)Q=0Z-#dgf&h{x@%!MM<QJ5s$|b(35wHOMlR@2M<J(>zVmUYvFRBuS*Y=^*cI`#}IN_}W0|4F1X+P)h>@6aWAK2mo*cX;QBB6;BcX000mG002z@003lRbYU+paA9(EEif=JFfc7MHDhLDF*!LcF<~(?Ei^GOH7z+eGBqt^HZ(Y4VmLTtHexj`V=yo<E^}^SaBz7paA9(Bb!BueV{&6lE=p!#U|?ccm6G-C+&?Qb08mQ-0u%!j000080B{3oQnk1vz0&{y0BHdL022TJ00000000000HlEc0001OWprU=VRT_HaA9(EEif=JFfdR{0Rj{Q6aWAK2mo*cX;P4YOScXH000aC000;O0000000000005+c1OWg5ZDn*}WMOn+FD`Ila&#>)FfcGME@N_IP)h*<6ay3h000O8a06*l8Ca6KegOagFaiJoNB{r;0000000000q=85Q003lRbYU-WVRCdWFfcGMFfB7RV`gJ9IXNvcVKFl;G%+wWEjc$bH7#T|G&o^mI5=cBVl^#eFfcGKb8ca9aCt6pVRCVGWpq$W0Rj{Q6aWAK2mo*cX;QBB6;BcX000mG002z@0000000000005+cECT=lWMOn+FD`Ila&#>)FfcGMEi*M^W@9lqIV~|^F*7YRF)%ePIX5yjEo3${IALNqIAk_rH7#Q>FfcB2Zeeh6c`k5aa&dKKbS`6ZV^B*41^@s600aO80C)ia0I3520000"
+        }
+      },
+      "inputs": [
+        {
+          "name": "df",
+          "node_id": "c3a5d221-9244-4586-be76-8fde924d9f34",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "34035620-d0a8-43c2-b5c6-599d0fca18af",
+      "type": "TRANSFORM",
+      "operator": "sagemaker.spark.encode_categorical_0.1",
+      "parameters": {
+        "operator": "One-hot encode",
+        "one_hot_encode_parameters": {
+          "invalid_handling_strategy": "Keep",
+          "drop_last": false,
+          "output_style": "Columns",
+          "input_column": "race",
+          "output_column": ""
+        },
+        "ordinal_encode_parameters": {
+          "invalid_handling_strategy": "Replace with NaN"
+        }
+      },
+      "trained_parameters": {
+        "one_hot_encode_parameters": {
+          "_hash": -1767228197713558300,
+          "string_indexer_model": "P)h>@6aWAK2mpozX;PgtUaQ>z003eE000vJ003=ebYWy+bYU-WVRCdWFfcGMFm;d1N&`U<MfZM2ttZVqBV?<aEJ6Z`+o9;LNt*P_>TWTH`FGn9L<4Rw=bl@21!*uw*nsDwz<}~ZA_nBMutrRTDKm+u#M&LVPSHE@&MPudLDH6DLK|Sytec@7>gK-f`@Vvu|3VzKcg5U^TGT7FA8u8bUe>CFf0Sdl?kClCZL8E!kkUuH!(zU|37s;ub#G{v;+ZHE#OD-pdhn)1iEJ39|2j&$pOjG&%oQk_Fq?Gv<&4Yto)z))B~XDUrq@hPULGmR;<;TVX3saX|GzMf-yF>I-6v2>0|XQR000O8h6HI+s+!Vs4gdfE3;+NC7ytkOZDn*}WMOn+FD`Ila&#>)FfcGME@N_IOD;-gU|?WkSRH3P7XVO80|XQR000O8h6HI+F9)RKx&Z(Hs{#N3NB{r;WMOn+FK}UUbS*G2FfcGJG&5skG-Nk8Ej2ebH7ztbV`VL2VK-qdWHw@DGc+?aWHUK9En_e+FfMa$VQ_GHE^uLTadl;MjZ({M+dvc@DYoObg099$poJN5NWdAS%291o2qK%%MH@mFg;L5$8YM$VV`pa65`y>rj?zW{q#u!O$anPmkv3^5bTiz0&V8N3oMfjlM);e9zdA$gLD<2aFh#rV*Y=!i-#J7GorYWRZhe2;a<*-K?LLC+h&2T>f~lvFWR(^LQ(4X1-7j4Lj)j>sB?<@P!!|stY0Ds6_Fy-V#~zgEj~`5N&TEEUbm00=B+I!pnbzzQySRf6T7F9kW7qUHm%Qf6{z+kP@S7YU)N_L{2zR<6_JTnN1#j=qT{YbmKS;3K^Ln>V@5b5bzIb3k5P~rXHo<Hta8WSy{h2<aY|h|(x>7<vac#s*`R#;8G(!H~Ulry;QV1>@ZmFJqrZu;$WS03qoGW54=bTK5vAQWN8InqHSsF5ZcSRJdm()EKz_06n^|1}S5%cCh*yS#v&HyfE$}*wMt42yPg$wxNAE1JS<&v*~A-R(PyB3T03*^7t2;8rAf8$6$rg22${%+m~S@xr9QdXm+<W-fA$5r{f8mDPmrb#-9$D?OS5>=x#FDH9J7=q*bVEYMt)1OdF0|XQR000O8h6HI+;Fm)r5&!@I5C8xGO#lD@WMOn+FD`Ila&#>)FfcGMEi^M@V>DzpI4w0dHZ?6YIb&rlVPQ96Eo3%gWivE0G-NY5I4xr^FfcB2Zeeh6c`k5aa&dKKbS`6ZV@obdW?*1oVhEjm=TNSr(g6TaO928D0~7!N00;nv1Zh&8GhVCR0001D0RR9K00000000000001_fdBvi0BvP-VPs)+VJ~oDa&#>)FfcGMP)h*<6ay3h000O8h6HI+s+!Vs4gdfE3;+NC7ytkO0000000000q=60r003=ebYWy+bYU+paA9(EEif=JFfcA-a$`_S0Rj{Q6aWAK2mpozX;Lo-q~p2)00653002k;0000000000005+cQUL$}WMOn+FK}UUbS*G2FfcGJG&5skG-Nk8Ej2ebH7ztbV`VL2VK-qdWHw@DGc+?aWHUK9En_e+FfMa$VQ_GHE^uLTadl;MP)h*<6ay3h000O8h6HI+;Fm)r5&!@I5C8xGO#lD@0000000000q=9k+003lRbYU+paA9(EEif=JFfc7NGh<^kWH&f1H8(ajEi^e}Wi4T0H(@PgHezKnG&3}0GdVadV=yo<E^}^SaBz7paA9(Bb!BueV{&6qO9ci10000400aPd0RRB+0{{R300",
+          "one_hot_encoder_model": "P)h>@6aWAK2mpozX;Rnu<$Kcr003zL000vJ003=ebYWy+bYU-WVRCdWFfcGMFm;YSPs2bAhIf9(&Fv|dkRq~HNUcN#6YI&kI5gtE<nu95<-cQ!K<bdi!(+eC>x*(8N>PJK^sXU;JEJZc=tBpuCj_p9`X%Ba@l$kZL^{dvYNL1#SQtW9gV~wB?HlvZ_K)pGUGr~9WlmAdoo;lqh42-(jpXV)3cOKT*I{SOt}_nq<wWujP9WxsN|kfveex2rj3HZ>y!{c)@qh8hg`Odf9*^-8{Iv*)5(ytE<!30Yh6#MZMF>t%J-@D$t$%3k@7;}+sp4AuvfO<GP)h>@6aWAK2mpozX;O%#kvk3m000aC000;O003=ebYWy+bYU+paA9(EEif=JFfcA-a$`#_N@ieSU}C6#`tv#fP)h>@6aWAK2mpozX;SPAT?l{y001xo002k;003lRbYU-WVRCdWFfcGMFfBM{V`MmEIb|(jI509TG-fnmEjT$fF)d+cVl_5nV>B{lW-={fFfcGKb8ca9aCt6pVRCVGWpsT~T}vY|6is8d_CX(f$dG|~C;^MY7-pP0J1zU5Zz3Y1zAYkYCvgWeGc`$9sx9o#@CW)sytQ>v1QWR2k8|!lH{|^2A|{A1(hUg)r$t%;ZLTAPmexZ%A0jwghZyV{T(B4|vIP65#~XGm%-xM0{gI_07#(1`ITB9Z)@FKHJW31gTj-!ko4T+L00eI%x-PXWW#y2E{lE{p?Eso>w~(KGCcly1!32BQn|c2l-S)3<wE6+;17jAInTL@dQd*l^F2({x@;ANwuQax(EBYhh5swhv{erOfnuBvck&c`CftS*WTsT3W8&Awl$C3@0b!IYhEM%&XI=5`_`-xSeT$Dbo0f;5zKT{YZrjTB(cD2kF6_BKX{HU&+C@On4(V7jE&{obvRzW0&8lW&(hU{GvG@j3|=ZK!H6z`R$vs$qe^El#hXJ<Gmbl!<nKUcjZmr4z@OyxgSmZoW*CTTy;dizNdsa`tF`@4P+zze=K5ITpy@(NH(0|XQR000O8h6HI+3>0Cj5&!@I5C8xGO#lD@WMOn+FD`Ila&#>)FfcGMEjVUlWH@6vWi4SiFfuJPW;9_fI5{;jEn#M2H8x{oG%{soGA&~;FfcB2Zeeh6c`k5aa&dKKbS`6ZV@obdW?*1oVyI3p-+k_%l^Fm~O928D0~7!N00;nv1Zh&&`Q>}l0001K0RR9K00000000000001_fdBvi0BvP-VPs)+VJ~oDa&#>)FfcGMP)h*<6ay3h000O8h6HI+h^3J`4gdfE3;+NC7ytkO0000000000q=5th003=ebYWy+bYU+paA9(EEif=JFfcA-a$`_S0Rj{Q6aWAK2mpozX;SPAT?l{y001xo002k;0000000000005+cNC5x<WMOn+FK}UUbS*G2FfcGJIA&vHIAb|wEnzq?GA%S_G+`|`IW;jYVP;}AHe+KnGG%5mEn_e+FfMa$VQ_GHE^uLTadl;MP)h*<6ay3h000O8h6HI+3>0Cj5&!@I5C8xGO#lD@0000000000q=7C2003lRbYU+paA9(EEif=JFfc7RW@BVHV>x9lVK^`{Ei`5{VJ$d0H8Cw=W@0rqV`DTjWo9xhV=yo<E^}^SaBz7paA9(Bb!BueV{&6qO9ci10000400aPd0RRB20{{R300"
+        }
+      },
+      "inputs": [
+        {
+          "name": "df",
+          "node_id": "77179344-71ed-49a0-9d93-382f381f00d7",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "95cfed2f-5bb8-404e-806e-3d58b0d56f78",
+      "type": "TRANSFORM",
+      "operator": "sagemaker.spark.handle_missing_0.1",
+      "parameters": {
+        "operator": "Impute",
+        "impute_parameters": {
+          "column_type": "Numeric",
+          "numeric_parameters": {
+            "strategy": "Approximate Median",
+            "input_column": "diag_2",
+            "output_column": "diag_2_fillna"
+          }
+        },
+        "fill_missing_parameters": {},
+        "add_indicator_for_missing_parameters": {
+          "input_column": "diag_2"
+        }
+      },
+      "inputs": [
+        {
+          "name": "df",
+          "node_id": "34035620-d0a8-43c2-b5c6-599d0fca18af",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "40a2533a-1abd-4acf-bc73-70e1bff09c21",
+      "type": "TRANSFORM",
+      "operator": "sagemaker.spark.handle_missing_0.1",
+      "parameters": {
+        "operator": "Impute",
+        "impute_parameters": {
+          "column_type": "Numeric",
+          "numeric_parameters": {
+            "strategy": "Approximate Median",
+            "input_column": "diag_3",
+            "output_column": "diag_3_fillna"
+          }
+        }
+      },
+      "inputs": [
+        {
+          "name": "df",
+          "node_id": "95cfed2f-5bb8-404e-806e-3d58b0d56f78",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "4c19e5c2-1a8e-43da-8531-ffee01b0ab70",
+      "type": "TRANSFORM",
+      "operator": "sagemaker.spark.handle_missing_0.1",
+      "parameters": {
+        "operator": "Impute",
+        "impute_parameters": {
+          "column_type": "Numeric",
+          "numeric_parameters": {
+            "strategy": "Approximate Median",
+            "input_column": "diag_1",
+            "output_column": "diag_1_fillna"
+          }
+        }
+      },
+      "inputs": [
+        {
+          "name": "df",
+          "node_id": "40a2533a-1abd-4acf-bc73-70e1bff09c21",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "33094c67-6368-4463-938e-5d11bf4687bf",
+      "type": "TRANSFORM",
+      "operator": "sagemaker.spark.search_and_edit_0.1",
+      "parameters": {
+        "operator": "Find and replace substring",
+        "find_and_replace_substring_parameters": {
+          "input_column": "readmitted",
+          "pattern": "<30",
+          "replacement": "YES"
+        }
+      },
+      "inputs": [
+        {
+          "name": "df",
+          "node_id": "4c19e5c2-1a8e-43da-8531-ffee01b0ab70",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "57deee79-0fae-48cb-b7a2-75ce2f82adb8",
+      "type": "TRANSFORM",
+      "operator": "sagemaker.spark.search_and_edit_0.1",
+      "parameters": {
+        "operator": "Find and replace substring",
+        "find_and_replace_substring_parameters": {
+          "input_column": "readmitted",
+          "pattern": ">30",
+          "replacement": "NO"
+        }
+      },
+      "inputs": [
+        {
+          "name": "df",
+          "node_id": "33094c67-6368-4463-938e-5d11bf4687bf",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "a3057b81-09e9-4e94-9bca-af6356109bc1",
+      "type": "VISUALIZATION",
+      "operator": "sagemaker.visualizations.quick_model_0.1",
+      "parameters": {
+        "name": "quick_model",
+        "label": "readmitted"
+      },
+      "inputs": [
+        {
+          "name": "df",
+          "node_id": "57deee79-0fae-48cb-b7a2-75ce2f82adb8",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "cd2a4595-dc09-4695-b3a5-de7629c11f49",
+      "type": "VISUALIZATION",
+      "operator": "sagemaker.visualizations.bias_report_0.1",
+      "parameters": {
+        "name": "racial_bias",
+        "is_label_value_or_threshold": "value",
+        "is_facet_value_or_threshold": "value",
+        "default_metrics": {
+          "CI": true,
+          "DPL": true,
+          "JS": true,
+          "CDDL": false
+        },
+        "group_name": "",
+        "show_additional_metrics": "no",
+        "label_values": "YES",
+        "facet_values": "1",
+        "label_name": "readmitted",
+        "facet_name": "race_AfricanAmerican",
+        "metrics": {
+          "CI": true,
+          "DPL": true,
+          "JS": true,
+          "CDDL": false
+        }
+      },
+      "inputs": [
+        {
+          "name": "df",
+          "node_id": "57deee79-0fae-48cb-b7a2-75ce2f82adb8",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "50183cde-02e1-4fe7-8ed1-a555048a1aa0",
+      "type": "VISUALIZATION",
+      "operator": "sagemaker.visualizations.scatterplot_0.1",
+      "parameters": {
+        "name": "time_in_hospital_vs_num_medications_by_gender",
+        "x_axis": "time_in_hospital",
+        "y_axis": "num_medications",
+        "facet_by": "gender_Male"
+      },
+      "inputs": [
+        {
+          "name": "df",
+          "node_id": "57deee79-0fae-48cb-b7a2-75ce2f82adb8",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "63897fa3-d379-4c65-89ac-b69afc7e0d82",
+      "type": "VISUALIZATION",
+      "operator": "sagemaker.visualizations.target_leakage_0.1",
+      "parameters": {
+        "max_features": "20",
+        "name": "Untitled",
+        "problem_type": "classification",
+        "target": "readmitted"
+      },
+      "inputs": [
+        {
+          "name": "df",
+          "node_id": "57deee79-0fae-48cb-b7a2-75ce2f82adb8",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "0df4f275-c06d-48d3-ad85-79be5553d6bb",
+      "type": "TRANSFORM",
+      "operator": "sagemaker.spark.manage_columns_0.1",
+      "parameters": {
+        "operator": "Move column",
+        "move_column_parameters": {
+          "move_type": "Move to start",
+          "move_to_start_parameters": {
+            "column_to_move": "readmitted"
+          }
+        },
+        "drop_column_parameters": {}
+      },
+      "inputs": [
+        {
+          "name": "df",
+          "node_id": "57deee79-0fae-48cb-b7a2-75ce2f82adb8",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "07111928-cf7b-40b3-878b-171f501509d7",
+      "type": "TRANSFORM",
+      "operator": "sagemaker.spark.manage_columns_0.1",
+      "parameters": {
+        "operator": "Drop column",
+        "drop_column_parameters": {
+          "column_to_drop": "diag_1"
+        },
+        "duplicate_column_parameters": {}
+      },
+      "inputs": [
+        {
+          "name": "df",
+          "node_id": "0df4f275-c06d-48d3-ad85-79be5553d6bb",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "34aae2e7-34e5-4d8e-a70e-0cd0cf82b078",
+      "type": "TRANSFORM",
+      "operator": "sagemaker.spark.manage_columns_0.1",
+      "parameters": {
+        "operator": "Drop column",
+        "drop_column_parameters": {
+          "column_to_drop": "diag_2"
+        }
+      },
+      "inputs": [
+        {
+          "name": "df",
+          "node_id": "07111928-cf7b-40b3-878b-171f501509d7",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "0b7ae01f-45a6-4805-a9e4-e986cdbdfdc3",
+      "type": "TRANSFORM",
+      "operator": "sagemaker.spark.manage_columns_0.1",
+      "parameters": {
+        "operator": "Drop column",
+        "drop_column_parameters": {
+          "column_to_drop": "diag_3"
+        }
+      },
+      "inputs": [
+        {
+          "name": "df",
+          "node_id": "34aae2e7-34e5-4d8e-a70e-0cd0cf82b078",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "cc7e2256-0eb3-4fb8-9cef-aca430021571",
+      "type": "TRANSFORM",
+      "operator": "sagemaker.spark.manage_rows_0.1",
+      "parameters": {
+        "operator": "Sort",
+        "sort_parameters": {
+          "order": "Ascending",
+          "sort_by": "patient_nbr_0"
+        }
+      },
+      "inputs": [
+        {
+          "name": "df",
+          "node_id": "0b7ae01f-45a6-4805-a9e4-e986cdbdfdc3",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "28b4a61d-b553-4238-90c7-a6d3cbbb3e0e",
+      "type": "TRANSFORM",
+      "operator": "sagemaker.spark.custom_pandas_0.1",
+      "parameters": {
+        "code": "# Table is available as variable `df`\ndf.drop_duplicates(subset=['encounter_id_0', 'patient_nbr_0'], \n                   keep='first', inplace=True)"
+      },
+      "inputs": [
+        {
+          "name": "df",
+          "node_id": "cc7e2256-0eb3-4fb8-9cef-aca430021571",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "b6eda023-ba67-470a-b887-2b871585a027",
+      "type": "TRANSFORM",
+      "operator": "sagemaker.spark.manage_columns_0.1",
+      "parameters": {
+        "operator": "Drop column",
+        "drop_column_parameters": {
+          "column_to_drop": "age"
+        }
+      },
+      "inputs": [
+        {
+          "name": "df",
+          "node_id": "28b4a61d-b553-4238-90c7-a6d3cbbb3e0e",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "9386bbf3-b801-43dd-a388-776f857e0ae9",
+      "type": "TRANSFORM",
+      "operator": "sagemaker.spark.manage_columns_0.1",
+      "parameters": {
+        "operator": "Drop column",
+        "drop_column_parameters": {
+          "column_to_drop": "encounter_id_0"
+        }
+      },
+      "inputs": [
+        {
+          "name": "df",
+          "node_id": "b6eda023-ba67-470a-b887-2b871585a027",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "009d1ec1-83f1-48bd-b9cd-da2b55242cc0",
+      "type": "TRANSFORM",
+      "operator": "sagemaker.spark.manage_columns_0.1",
+      "parameters": {
+        "operator": "Drop column",
+        "drop_column_parameters": {
+          "column_to_drop": "patient_nbr_0"
+        }
+      },
+      "inputs": [
+        {
+          "name": "df",
+          "node_id": "9386bbf3-b801-43dd-a388-776f857e0ae9",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "e4bed768-f101-4a94-8066-dd8cbb990585",
+      "type": "VISUALIZATION",
+      "operator": "sagemaker.visualizations.quick_model_0.1",
+      "parameters": {
+        "name": "readmission_clean_data",
+        "label": "readmitted"
+      },
+      "inputs": [
+        {
+          "name": "df",
+          "node_id": "009d1ec1-83f1-48bd-b9cd-da2b55242cc0",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "9dae7f0a-0f44-4f0e-937b-dbff037a3cb0",
+      "type": "VISUALIZATION",
+      "operator": "sagemaker.visualizations.scatterplot_0.1",
+      "parameters": {
+        "name": "t_hospital_vs_n_inpatient_by_gender",
+        "x_axis": "time_in_hospital",
+        "y_axis": "number_inpatient",
+        "facet_by": "gender_Female"
+      },
+      "inputs": [
+        {
+          "name": "df",
+          "node_id": "009d1ec1-83f1-48bd-b9cd-da2b55242cc0",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "055214be-4018-4847-8642-c7e6f60a72fc",
+      "type": "SOURCE",
+      "operator": "sagemaker.s3_source_0.1",
+      "parameters": {
+        "dataset_definition": {
+          "__typename": "S3CreateDatasetDefinitionOutput",
+          "datasetSourceType": "S3",
+          "name": "diabetic_data_labs.csv",
+          "description": null,
+          "s3ExecutionContext": {
+            "__typename": "S3ExecutionContext",
+            "s3Uri": "s3://sagemaker-us-east-1-029454422462/uci-us-diabetes/dataset_diabetes/diabetic_data_labs.csv",
+            "s3ContentType": "csv",
+            "s3HasHeader": true
+          }
+        }
+      },
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "default",
+          "sampling": {
+            "sampling_method": "sample_by_limit",
+            "limit_rows": 50000
+          }
+        }
+      ]
+    },
+    {
+      "node_id": "563f1b17-911e-408c-ad4c-9d6ed9458597",
+      "type": "TRANSFORM",
+      "operator": "sagemaker.spark.infer_and_cast_type_0.1",
+      "parameters": {},
+      "inputs": [
+        {
+          "name": "default",
+          "node_id": "055214be-4018-4847-8642-c7e6f60a72fc",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    }
+  ]
+}
