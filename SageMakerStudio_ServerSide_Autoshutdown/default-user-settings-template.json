@@ -1,0 +1,14 @@
+{
+    "DomainId": "<domainid>",
+    "DefaultUserSettings": {
+      "JupyterServerAppSettings": {
+        "DefaultResourceSpec":{
+          "InstanceType": "system",
+          "LifecycleConfigArn": "arn:aws:sagemaker:<region>:<account>:studio-lifecycle-config/autoshutdown"
+        },
+        "LifecycleConfigArns": [
+          "arn:aws:sagemaker:<region>:<account>:studio-lifecycle-config/autoshutdown"
+        ]
+     }
+  }
+}
