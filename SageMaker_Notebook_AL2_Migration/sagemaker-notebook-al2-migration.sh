@@ -10,6 +10,7 @@ volume=<desired-ebs-volume-in-GB> # e.g. 120
 internet=Enabled # or Disabled
 backup_script=AL1-instance-create-backup # name of the backup lifecycle config script registered in SageMaker. https://github.com/aws-samples/amazon-sagemaker-notebook-instance-lifecycle-config-samples/tree/master/scripts/migrate-ebs-data-backup
 sync_script=AL2-sync-backup # name of the sync lifecycle config script registered in SageMaker. https://github.com/aws-samples/amazon-sagemaker-notebook-instance-lifecycle-config-samples/tree/master/scripts/migrate-ebs-data-sync
+
 tag1_key=ebs-backup-bucket
 tag2_key=backup-snapshot
 
