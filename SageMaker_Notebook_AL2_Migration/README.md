@@ -8,3 +8,5 @@ Fill in the variables in [sagemaker-notebook-al2-migration.sh](./sagemaker-noteb
 1. Start AL1 instance to trigger the backup
 1. Create AL2 instance with sync script attached
 1. Stop AL1 instance and delete the instance (optional)
+
+This script assumes you have created the two SageMaker notebook instance lifecycle configuration scripts mentioned in **Create lifecycle configurations** section in the blog: https://aws.amazon.com/blogs/machine-learning/migrate-your-work-to-amazon-sagemaker-notebook-instance-with-amazon-linux-2/.
