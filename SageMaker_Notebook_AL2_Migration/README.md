@@ -11,6 +11,6 @@ To run the script, fill in the variables in [sagemaker-notebook-al2-migration.sh
 1. Create AL2 instance with sync script attached
 1. Stop AL1 instance and delete the instance (optional)
 
-This script assumes you have created the two SageMaker notebook instance lifecycle configuration scripts mentioned in **Create lifecycle configurations** section in the blog: https://aws.amazon.com/blogs/machine-learning/migrate-your-work-to-amazon-sagemaker-notebook-instance-with-amazon-linux-2/. Read the blog to understand how it works.
+This script assumes you have created the two SageMaker notebook instance lifecycle configuration scripts mentioned in **Create lifecycle configurations** section in the [blog](https://aws.amazon.com/blogs/machine-learning/migrate-your-work-to-amazon-sagemaker-notebook-instance-with-amazon-linux-2/). Read the blog to understand how it works.
 
 The two scripts can be found in [migrate-ebs-data-backup](https://github.com/aws-samples/amazon-sagemaker-notebook-instance-lifecycle-config-samples/tree/master/scripts/migrate-ebs-data-backup) and [migrate-ebs-data-sync](https://github.com/aws-samples/amazon-sagemaker-notebook-instance-lifecycle-config-samples/tree/master/scripts/migrate-ebs-data-sync).
